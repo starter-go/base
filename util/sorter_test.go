@@ -3,6 +3,8 @@ package util
 import (
 	"math/rand"
 	"testing"
+
+	"github.com/starter-go/base"
 )
 
 func TestSorter(t *testing.T) {
@@ -29,4 +31,11 @@ func TestSorter(t *testing.T) {
 	for i, n := range list {
 		t.Logf("  int.list[%d]=%d", i, n)
 	}
+}
+
+func TestThisModuleInfo(t *testing.T) {
+
+	info := base.GetModuleInfoText()
+	t.Logf("module.info =  %s", info)
+
 }

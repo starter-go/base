@@ -2,10 +2,9 @@ package context2
 
 import (
 	"context"
-	"fmt"
 )
 
-const theValuesKey = "base/context2.Values#binding"
+// const theValuesKey = "base/context2.Values#binding"
 
 // Getter 是作用于 context.Context 的 key-value 取值接口
 type Getter interface {
@@ -26,34 +25,54 @@ type Values interface {
 
 // GetValues 从上下文中获取 Values 接口
 func GetValues(c context.Context) (Values, error) {
-	if c == nil {
-		return nil, fmt.Errorf("context is nil")
+
+	ctx, err := GetContext(c)
+	if err != nil {
+		return nil, err
 	}
-	const key = theValuesKey
-	api, ok := c.Value(key).(Values)
-	if ok && api != nil {
-		return api, nil
-	}
-	return nil, fmt.Errorf("base/context2: invoking SetupValues() is required before GetValues()")
+	return ctx.GetValues()
 }
 
-// Setup 安装配置 Values 接口
-func Setup(val Values) {
-	const key = theValuesKey
-	val.SetValue(key, val)
+////////////////////////////////////////////////////////////////////////////////
+
+type CommonValues struct {
+	context *Context
 }
 
-// SetupContext 为 context.Context 安装配置 Values 接口
-func SetupContext(c context.Context) Values {
-	values, _ := GetValues(c)
-	if values != nil {
-		return values
+// Context implements Values.
+func (inst *CommonValues) Context() context.Context {
+
+	facade, err := inst.context.GetFacade()
+	if err != nil {
+		panic(err)
 	}
-	if c == nil {
-		panic("context is nil")
-	}
-	v2 := &defaultKeyValues{ctx: c}
-	values = v2
-	Setup(values)
-	return values
+	return facade
 }
+
+// GetValue implements Values.
+func (inst *CommonValues) GetValue(key any) any {
+
+	ctx := inst.context
+	ada, err := ctx.GetAdapter()
+	if err != nil {
+		panic(err)
+	}
+	return ada.GetValue(ctx, key)
+}
+
+// SetValue implements Values.
+func (inst *CommonValues) SetValue(key any, value any) {
+
+	ctx := inst.context
+	ada, err := ctx.GetAdapter()
+	if err != nil {
+		panic(err)
+	}
+	ada.SetValue(ctx, key, value)
+}
+
+func (inst *CommonValues) _impl() Values {
+	return inst
+}
+
+////////////////////////////////////////////////////////////////////////////////

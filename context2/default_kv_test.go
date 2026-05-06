@@ -7,18 +7,21 @@ import (
 
 func TestValues(t *testing.T) {
 
-	c1 := context.Background()
+	// setup
 
-	kv := SetupContext(c1)
-	kv.SetValue("a", "1")
-	kv.SetValue("b", "2")
-	kv.SetValue("c", "3")
+	cc := context.Background()
+	cc = SetupConsoleContext(cc)
 
-	c2 := kv.Context()
-	kv, err := GetValues(c2)
+	// use (get)
+
+	kv, err := GetValues(cc)
 	if err != nil {
 		t.Error(err)
 	}
+
+	kv.SetValue("a", "1")
+	kv.SetValue("b", "2")
+	kv.SetValue("c", "3")
 
 	kv.GetValue("x")
 }
