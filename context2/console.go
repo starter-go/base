@@ -27,6 +27,7 @@ func (inst *ConsoleAdapter) SetValue(c *Context, name any, value any) {
 	cc1 := c.Facade
 	cc2 := context.WithValue(cc1, name, value)
 	c.Facade = cc2
+	c.PutKey(name)
 }
 
 func (inst *ConsoleAdapter) innerCheckParams(c *Context, name, value any) {

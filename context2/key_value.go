@@ -21,6 +21,7 @@ type Values interface {
 	Getter
 	Setter
 	Context() context.Context
+	Keys() []string
 }
 
 // GetValues 从上下文中获取 Values 接口
@@ -37,6 +38,21 @@ func GetValues(c context.Context) (Values, error) {
 
 type CommonValues struct {
 	context *Context
+}
+
+// Keys implements Values.
+func (inst *CommonValues) Keys() []string {
+
+	src := inst.context.Keys
+	dst := make([]string, 0)
+
+	for k, v := range src {
+		if v {
+			dst = append(dst, k)
+		}
+	}
+
+	return dst
 }
 
 // Context implements Values.

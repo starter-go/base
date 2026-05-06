@@ -23,6 +23,8 @@ type Context struct {
 	Values Values
 
 	Loaded bool
+
+	Keys map[string]bool
 }
 
 func (inst *Context) GetAdapter() (Adapter, error) {
@@ -107,4 +109,20 @@ func (inst *Context) GetValues() (Values, error) {
 	}
 
 	return values, nil
+}
+
+func (inst *Context) PutKey(key any) {
+	if key == nil {
+		return
+	}
+	table := inst.Keys
+	if table == nil {
+		table = make(map[string]bool)
+		inst.Keys = table
+	}
+	keyStr, ok := key.(string)
+	if !ok {
+		keyStr = fmt.Sprint(key)
+	}
+	table[keyStr] = true
 }
