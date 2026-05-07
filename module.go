@@ -7,8 +7,8 @@ import (
 
 const (
 	theModuleName     = "github.com/starter-go/base"
-	theModuleVersion  = "v0.9.13"
-	theModuleRevision = 95
+	theModuleVersion  = "v0.9.14"
+	theModuleRevision = 96
 )
 
 func GetModuleInfoText() string {
