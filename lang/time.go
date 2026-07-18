@@ -32,6 +32,10 @@ func (t Time) String() string {
 
 // Time 把时间戳转换为 time.Time 形式
 func (t Time) Time() time.Time {
+	if t == 0 {
+		var zero time.Time
+		return zero
+	}
 	ms := int64(t)
 	return time.UnixMilli(ms)
 }
@@ -43,6 +47,9 @@ func (t Time) Int() int64 {
 
 // NewTime 根据 time.Time 创建时间戳
 func NewTime(t time.Time) Time {
+	if t.IsZero() {
+		return 0
+	}
 	ms := t.UnixMilli()
 	return Time(ms)
 }
